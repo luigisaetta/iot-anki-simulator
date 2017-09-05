@@ -145,6 +145,7 @@ with open(fName) as csvfile:
      
 # end main loop
 
+print()
 print("*******************")
 print("End of simulation...")
 print("Num. of msgs processed", nMsgs)
