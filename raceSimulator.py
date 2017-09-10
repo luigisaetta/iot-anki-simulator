@@ -30,9 +30,6 @@ fName = sys.argv[1]
 print("")
 print("File name: ", fName)
 
-# Uncomment to enable debug messages
-# mqttc.on_log = on_log
-
 # MQTT connectivity is encapsulated in Device class
 gateway = Device()
 
