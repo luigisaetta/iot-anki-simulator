@@ -64,24 +64,19 @@ with open(fName) as csvfile:
         del msgJson["raceStatus"]
         del msgJson["dateTime"]
 
-        if ((tipoMsg == "data") and ("lapTime" not in msgJson)):
+        if (tipoMsg == "data") and ("lapTime" not in msgJson):
             # speed msgs
-            # send !
             gateway.publish("speed/msg", msg)
             print(msgJson)
-
-        elif (tipoMsg == "alert"):
+        elif tipoMsg == "alert":
              # offtrack msgs
              gateway.publish("alert/msg", msg)           
              print(msgJson)
-        
-        elif ((tipoMsg == "data") and ("lapTime" in msgJson)):
+        elif (tipoMsg == "data") and ("lapTime" in msgJson):
              # lap msgs
              gateway.publish("lap/msg", msg)
              print(msgJson)
 
-      
-        
         # sleep before next iteration
         nMsgs = nMsgs + 1
         time.sleep(sleepTime)
@@ -91,6 +86,6 @@ with open(fName) as csvfile:
 print()
 print("*******************")
 print("End of simulation...")
-print("Num. of msgs processed:", nMsgs)
+print("Num. of messages processed:", nMsgs)
 
 # close
