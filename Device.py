@@ -18,12 +18,12 @@ config.read('gateway.ini')
 # host = "153.92.32.90"
 host = config['DEFAULT']['host']
 port = int(config['DEFAULT']['port'])
-topic = config['DEFAULT']['topic']
-topicAlert = config['DEFAULT']['topicAlert']
 timeout = int(config['DEFAULT']['timeout'])
 client = config['DEFAULT']['client']
 myQos = int(config['DEFAULT']['myQos'])
 
+topic = config['DEFAULT']['topic']
+topicAlert = config['DEFAULT']['topicAlert']
 
 class Device(object):
     """ Classe che incapsula il comportamento di un Device """
@@ -73,8 +73,8 @@ class Device(object):
             print("Waiting for MQTT connection...")
             time.sleep(1)
 
-    def publish(self, msg):
+    def publish(self, theTopic, msg):
        print("message published ", msg)
-       self.mqttClient.publish(topic, msg, qos=myQos)
+       self.mqttClient.publish(theTopic, msg, qos=myQos)
     
 
