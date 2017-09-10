@@ -21,12 +21,12 @@ port = int(config['DEFAULT']['port'])
 timeout = int(config['DEFAULT']['timeout'])
 client = config['DEFAULT']['client']
 myQos = int(config['DEFAULT']['myQos'])
-
-topic = config['DEFAULT']['topic']
-topicAlert = config['DEFAULT']['topicAlert']
+mqttLogging = config['DEFAULT']['mqttLogging']
 
 class Device(object):
-    """ Classe che incapsula il comportamento di un Device """
+    """ This class encapsulate Device communication with MQTT broker """
+    
+    # Constructor
     def __init__(self):
         self.connOK = False
 
@@ -39,6 +39,8 @@ class Device(object):
         self.mqttClient.on_connect = self.on_connect
         self.mqttClient.on_publish = self.on_publish
         
+        if mqttLogging == "YES":
+            self.mqttClient.on_log = self.on_log
         
     # MQTT callbacks definition
     
@@ -52,11 +54,14 @@ class Device(object):
         print("")
 
     def on_message(self, mqttc, obj, msg):
-        print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        print(msg.topic + " " + str(msg.payload))
 
     def on_publish(self, mqttc, obj, mid):
         # print("mid: " + str(mid))
         pass
+
+    def on_log(self, client, userdata, level, buf):
+        print("log: ", buf)
 
     # end MQTT callbacks definition
 
@@ -73,8 +78,11 @@ class Device(object):
             print("Waiting for MQTT connection...")
             time.sleep(1)
 
-    def publish(self, theTopic, msg):
+    def publish(self, topic, msg):
        print("message published ", msg)
-       self.mqttClient.publish(theTopic, msg, qos=myQos)
+       (result, mid) = self.mqttClient.publish(topic, msg, qos=myQos)
     
+    def subscribe(self, topic):
+        # for now not implemented
+        pass
 
