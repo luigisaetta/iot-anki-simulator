@@ -44,7 +44,7 @@ class Device(object):
     
     def on_connect(self, mqttc, obj, flags, connResult):
 
-        if (connResult == 0):
+        if connResult == 0:
             self.connOK = True
 
         print("")
@@ -57,7 +57,7 @@ class Device(object):
     def on_publish(self, mqttc, obj, mid):
         # print("mid: " + str(mid))
         pass
-    
+
     # end MQTT callbacks definition
 
     #
@@ -69,7 +69,7 @@ class Device(object):
         self.mqttClient.loop_start()
 
     def wait_for_conn_ok(self):
-        while (self.connOK != True):
+        while self.connOK != True:
             print("Waiting for MQTT connection...")
             time.sleep(1)
 
