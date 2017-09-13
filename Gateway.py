@@ -1,5 +1,6 @@
-from Device import Device
 import time
+from Device import Device
+
 
 # main
 
@@ -10,5 +11,5 @@ gateway.connect()
 gateway.wait_for_conn_ok()
 
 while True:
-    gateway.publish("MQTT msgs...")
+    gateway.publish("test/msg", "MQTT msgs...")
     time.sleep(5)

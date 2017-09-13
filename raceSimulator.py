@@ -1,7 +1,9 @@
 #
 # Author: L. Saetta
-# august 2017
+# september 2017
 #
+# pylint: disable=invalid-name
+
 import csv
 import json
 import time
@@ -38,47 +40,52 @@ gateway.connect()
 nMsgs = 1
 
 # open the input file and then... read, pulish loop
-with open(fName) as csvfile:
-    readerCSV = csv.reader(csvfile, delimiter=';')
+try:
+    with open(fName) as csvfile:
+        readerCSV = csv.reader(csvfile, delimiter=';')
+
+        # wait for MQTT connection OK
+        # (at this point should be connected)
+        gateway.wait_for_conn_ok()
+
+        # read line by line...    
+        for row in readerCSV:
+            tempo = row[0]
+            tipoMsg = row[1]
+            msg = row[3]
+            # convert in JSON
+            msgJson = json.loads(msg)
     
-    # wait for MQTT connection OK
-    # (at this point should be connected)
-    gateway.wait_for_conn_ok()
+            # remove data not useful for Console from JSON
+            del msgJson["carId"]
+            del msgJson["deviceId"]
+            del msgJson["demozone"]
+            del msgJson["raceId"]
+            del msgJson["raceStatus"]
+            del msgJson["dateTime"]
 
-    # read line by line...    
-    for row in readerCSV:
-        tempo = row[0]
-        tipoMsg = row[1]
-        msg = row[3]
-        # convert in JSON
-        msgJson = json.loads(msg)
+            # different kind of msgs are sent to different topics
+            if (tipoMsg == "data") and ("lapTime" not in msgJson):
+                # speed msgs
+                gateway.publish("speed/msg", msg)
+            elif tipoMsg == "alert":
+                # offtrack msgs
+                gateway.publish("alert/msg", msg)           
+            elif (tipoMsg == "data") and ("lapTime" in msgJson):
+                # lap msgs
+                gateway.publish("lap/msg", msg)
         
-        # remove data not useful for Console from JSON
-        del msgJson["carId"]
-        del msgJson["deviceId"]
-        del msgJson["demozone"]
-        del msgJson["raceId"]
-        del msgJson["raceStatus"]
-        del msgJson["dateTime"]
-
-        if (tipoMsg == "data") and ("lapTime" not in msgJson):
-            # speed msgs
-            gateway.publish("speed/msg", msg)
             print(msgJson)
-        elif tipoMsg == "alert":
-             # offtrack msgs
-             gateway.publish("alert/msg", msg)           
-             print(msgJson)
-        elif (tipoMsg == "data") and ("lapTime" in msgJson):
-             # lap msgs
-             gateway.publish("lap/msg", msg)
-             print(msgJson)
 
-        # sleep before next iteration
-        nMsgs = nMsgs + 1
-        time.sleep(sleepTime)
-     
-# end main loop
+            # sleep before next iteration
+            nMsgs += 1
+            time.sleep(sleepTime)
+
+    # end main loop
+except IOError:
+    print ("Errore: file not found: ", fName)
+    print("Interrupted...")
+    sys.exit(-1)
 
 print()
 print("*******************")

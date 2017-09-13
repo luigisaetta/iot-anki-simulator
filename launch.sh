@@ -1,1 +1,1 @@
-python raceSimulator.py raceData_short.log
+python raceSimulator.py raceData_long.log
