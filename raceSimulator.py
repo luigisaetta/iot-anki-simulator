@@ -60,20 +60,23 @@ try:
             del msgJson["carId"]
             del msgJson["deviceId"]
             del msgJson["demozone"]
-            del msgJson["raceId"]
             del msgJson["raceStatus"]
             del msgJson["dateTime"]
+
+            # now we have to build the new string to use as MQTT msg (MQTT wants binary)
+            msgJson['time'] = tempo
+            msgNew = json.dumps(msgJson)
 
             # different kind of msgs are sent to different topics
             if (tipoMsg == "data") and ("lapTime" not in msgJson):
                 # speed msgs
-                gateway.publish("speed/msg", msg)
+                gateway.publish("speed/msg", msgNew)
             elif tipoMsg == "alert":
                 # offtrack msgs
-                gateway.publish("alert/msg", msg)           
+                gateway.publish("alert/msg", msgNew)           
             elif (tipoMsg == "data") and ("lapTime" in msgJson):
                 # lap msgs
-                gateway.publish("lap/msg", msg)
+                gateway.publish("lap/msg", msgNew)
         
             print(msgJson)
 
