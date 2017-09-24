@@ -39,7 +39,7 @@ gateway.connect()
 
 nMsgs = 1
 
-# open the input file and then... read, pulish loop
+# open the input file and then... read, publish loop
 try:
     with open(fName) as csvfile:
         readerCSV = csv.reader(csvfile, delimiter=';')
@@ -93,6 +93,6 @@ except IOError:
 print()
 print("*******************")
 print("End of simulation...")
-print("Num. of messages processed:", nMsgs)
+print("Num. of messages processed:", (nMsgs -1))
 
 # close

@@ -88,7 +88,7 @@ class Device(object):
     def publish(self, topic, msg):
         if mqttLogging == "YES":
             print("message published ", msg)
-    
+
         (result, mid) = self.mqttClient.publish(topic, msg, qos=MYQOS)
 
     def subscribe(self, topic):
