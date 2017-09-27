@@ -1,3 +1,4 @@
+# just an example to show how to use the Device class
 import time
 from Device import Device
 
