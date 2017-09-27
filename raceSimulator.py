@@ -1,6 +1,6 @@
 #
 # Author: L. Saetta
-# september 2017
+# 27 september 2017
 #
 # pylint: disable=invalid-name
 
