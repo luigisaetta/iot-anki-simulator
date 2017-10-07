@@ -19,6 +19,26 @@ sleepTime = 0.2
 # the name of the file with data
 # fName = "raceData_short.log" 
 
+# This function reorder the fields in the message
+def reorderFields(msgJsonIn):
+    msgJsonNew = {}
+    msgJsonNew['time'] = msgJsonIn['time']
+    msgJsonNew['dateTimeString'] = msgJsonIn['dateTimeString']
+    msgJsonNew['raceId'] = msgJsonIn['raceId']
+    msgJsonNew['carName'] = msgJsonIn['carName']
+    msgJsonNew['lap'] = msgJsonIn['lap']
+            
+    if 'trackId' in msgJsonIn:
+        msgJsonNew['trackId'] = msgJsonIn['trackId']
+    if 'speed' in msgJsonIn:
+        msgJsonNew['speed'] = msgJsonIn['speed']
+    if 'lapTime' in msgJsonIn:
+        msgJsonNew['lapTime'] = msgJsonIn['lapTime']
+    if 'message' in msgJsonIn:
+        msgJsonNew['message'] = msgJsonIn['message']
+        msgJsonNew['lastKnownTrack'] = msgJsonIn['lastKnownTrack']
+    
+    return msgJsonNew
 #
 # Main
 #
@@ -65,7 +85,8 @@ try:
 
             # now we have to build the new string to use as MQTT msg (MQTT wants binary)
             msgJson['time'] = tempo
-            msgNew = json.dumps(msgJson)
+
+            msgNew = json.dumps(reorderFields(msgJson))
 
             # different kind of msgs are sent to different topics
             if (tipoMsg == "data") and ("lapTime" not in msgJson):
@@ -78,7 +99,7 @@ try:
                 # lap msgs
                 gateway.publish("lap/msg", msgNew)
         
-            print(msgJson)
+            print(reorderFields(msgJson))
 
             # sleep before next iteration
             nMsgs += 1
@@ -86,7 +107,7 @@ try:
 
     # end main loop
 except IOError:
-    print ("Errore: file not found: ", fName)
+    print("Errore: file not found: ", fName)
     print("Interrupted...")
     sys.exit(-1)
 
