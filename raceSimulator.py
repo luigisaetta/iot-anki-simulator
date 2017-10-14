@@ -49,6 +49,8 @@ print("Starting simulation....")
 # reading file name from command line args
 #
 fName = sys.argv[1]
+newRaceId = sys.argv[2]
+
 print("")
 print("File name: ", fName)
 
@@ -83,8 +85,17 @@ try:
             del msgJson["raceStatus"]
             del msgJson["dateTime"]
 
+            # capture raceId
+            raceID = msgJson["raceId"]
+
+            if (nMsgs == 1):
+                print("RACE ID: ", raceID)
+
             # now we have to build the new string to use as MQTT msg (MQTT wants binary)
             msgJson['time'] = tempo
+
+            # now the raceId is changed from the launch file....
+            msgJson['raceId'] = newRaceId
 
             msgNew = json.dumps(reorderFields(msgJson))
 
